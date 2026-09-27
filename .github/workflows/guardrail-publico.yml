@@ -1,0 +1,18 @@
+name: guardrail-publico
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  no-ficha:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vetos
+        run: |
+          set -euo pipefail
+          if grep -RInE 'USD[[:space:]]*[0-9]|COP[[:space:]]*[0-9]|1[,.]15[[:space:]]*%|TIR[[:space:]]*[0-9]|helipuerto|luxury tower' --include='*.md' . ; then
+            echo '::error::La tesis no lleva ficha.'
+            exit 1
+          fi
